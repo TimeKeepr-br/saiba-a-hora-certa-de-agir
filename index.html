@@ -3,511 +3,956 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Time Keepr | Alta Relojoaria</title>
-    <meta name="description" content="Relógios exclusivos para pessoas que dominam o próprio tempo.">
+    <title>Time Keepr | Elite Boutique SPA</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Montserrat:wght@200;300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Montserrat:wght@100;200;300;400;600;800;900&display=swap" rel="stylesheet">
     
     <style>
-        /* =========================================
-           VARIÁVEIS E RESET
-        ========================================= */
+        /* ==========================================================================
+           1. VARIÁVEIS GERAIS E DESIGN SYSTEM
+           ========================================================================== */
         :root {
-            --gold: #D4AF37;
-            --bg-dark: #050505;
-            --surface: rgba(25, 25, 25, 0.6);
-            --text-main: #E0E0E0;
-            --text-muted: #888888;
-            --danger: #FF3B30;
-            --success: #34C759;
-            --transition: 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --tk-gold-primary: #D4AF37;
+            --tk-gold-light: #F9E498;
+            --tk-gold-dark: #AA8822;
+            --tk-bg-base: #030303;
+            --tk-bg-surface: rgba(15, 15, 15, 0.7);
+            --tk-bg-glass: rgba(10, 10, 10, 0.4);
+            --tk-border-glow: rgba(212, 175, 55, 0.2);
+            --tk-border-subtle: rgba(255, 255, 255, 0.05);
+            --tk-text-main: #FFFFFF;
+            --tk-text-muted: #888888;
+            --tk-danger: #FF3B30;
+            --tk-success: #34C759;
+            --tk-ease-fluid: cubic-bezier(0.25, 1, 0.25, 1);
+            --tk-ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+        /* ==========================================================================
+           2. RESET E TIPOGRAFIA BASE
+           ========================================================================== */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        html { scroll-behavior: smooth; font-size: 16px; }
         
         body { 
             font-family: 'Montserrat', sans-serif; 
-            background-color: var(--bg-dark); 
-            color: var(--text-main); 
+            background-color: var(--tk-bg-base); 
+            color: var(--tk-text-main); 
             overflow-x: hidden;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: var(--bg-dark); }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+        ::selection { background: var(--tk-gold-primary); color: #000; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--tk-bg-base); }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--tk-gold-primary); }
 
-        /* =========================================
-           HEADER E NAVEGAÇÃO
-        ========================================= */
-        header {
-            position: fixed; top: 0; width: 100%; padding: 20px 5%;
-            background: rgba(5, 5, 5, 0.85); backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
-            display: flex; justify-content: space-between; align-items: center; z-index: 1000;
-            transition: transform 0.3s ease;
+        /* ==========================================================================
+           3. BACKGROUND AMBIENTE
+           ========================================================================== */
+        .ambient-glow {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: radial-gradient(circle at 50% 30%, rgba(212, 175, 55, 0.03) 0%, transparent 60%),
+                        radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.01) 0%, transparent 50%);
+            z-index: -1; pointer-events: none;
         }
-        header.scrolled { padding: 15px 5%; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
-        
-        .logo { font-family: 'Cinzel', serif; font-size: 1.8rem; font-weight: 800; color: var(--gold); letter-spacing: 4px; cursor: pointer; }
-        
-        .btn-cart {
-            background: transparent; color: var(--gold); border: 1px solid var(--gold);
-            padding: 10px 20px; border-radius: 2px; font-weight: 600; font-size: 0.85rem;
-            cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 8px;
+
+        /* ==========================================================================
+           4. LAYOUT COMPONENTS (HEADER, NAV)
+           ========================================================================== */
+        .site-header {
+            position: fixed; top: 0; left: 0; width: 100%; padding: 25px 5%;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 1000; transition: background 0.5s var(--tk-ease-fluid), padding 0.5s var(--tk-ease-fluid);
+            border-bottom: 1px solid transparent;
         }
-        .btn-cart:hover { background: var(--gold); color: var(--bg-dark); box-shadow: 0 0 15px rgba(212, 175, 55, 0.4); }
-
-        /* =========================================
-           SCENES E ANIMAÇÕES
-        ========================================= */
-        .scene { display: none; opacity: 0; min-height: 100vh; padding-top: 80px; }
-        .scene.active { display: block; animation: fadeInScene 0.6s ease forwards; }
-        @keyframes fadeInScene { to { opacity: 1; } }
-
-        .btn-primary {
-            background: var(--gold); color: var(--bg-dark); padding: 18px 40px; border: none;
-            font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1rem; text-transform: uppercase;
-            letter-spacing: 2px; cursor: pointer; transition: var(--transition); border-radius: 2px;
-            position: relative; overflow: hidden;
+        
+        .site-header.is-scrolled {
+            padding: 15px 5%; background: rgba(3, 3, 3, 0.85);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-bottom-color: var(--tk-border-subtle);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        .btn-primary::after {
-            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(to right, transparent, rgba(255,255,255,0.4), transparent);
-            transform: skewX(-25deg); transition: 0.5s;
+
+        .brand-logo { 
+            font-family: 'Cinzel', serif; font-size: 2rem; font-weight: 900; 
+            letter-spacing: 8px; color: var(--tk-text-main); cursor: pointer;
+            text-transform: uppercase; transition: 0.3s;
+            display: flex; align-items: center; gap: 10px;
         }
-        .btn-primary:hover::after { left: 150%; }
-        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3); }
+        .brand-logo span { color: var(--tk-gold-primary); }
+        .brand-logo:hover { text-shadow: 0 0 20px rgba(212, 175, 55, 0.4); }
 
-        /* =========================================
-           HOME HERO
-        ========================================= */
-        .hero {
-            height: 90vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
-            background: radial-gradient(circle at center, rgba(0,0,0,0.3) 0%, var(--bg-dark) 100%), url('https://images.unsplash.com/photo-1523170335258-f5ed11844a49?q=80&w=2000&auto=format&fit=crop') center/cover fixed;
+        .header-controls { display: flex; align-items: center; gap: 25px; }
+
+        .search-wrapper { position: relative; }
+        .search-input {
+            background: var(--tk-bg-glass); border: 1px solid var(--tk-border-subtle);
+            color: var(--tk-text-main); padding: 12px 20px; border-radius: 30px;
+            font-family: 'Montserrat'; font-size: 0.85rem; width: 220px;
+            transition: all 0.4s var(--tk-ease-fluid); backdrop-filter: blur(5px);
         }
-        .hero h1 { font-family: 'Cinzel', serif; font-size: clamp(2.5rem, 6vw, 5rem); color: var(--white); text-shadow: 0 5px 20px rgba(0,0,0,0.8); margin-bottom: 20px; }
-        .hero h1 span { color: var(--gold); }
-        .hero p { color: var(--text-muted); font-size: 1.2rem; font-weight: 300; max-width: 600px; margin-bottom: 40px; letter-spacing: 1px; }
+        .search-input:focus {
+            outline: none; border-color: var(--tk-gold-primary); width: 280px;
+            background: rgba(255,255,255,0.05); box-shadow: 0 0 15px var(--tk-border-glow);
+        }
 
-        /* =========================================
-           CATÁLOGO DE PRODUTOS E ABAS (TABS)
-        ========================================= */
-        .catalog-container { padding: 80px 5%; max-width: 1400px; margin: 0 auto; }
-        .section-title { text-align: center; margin-bottom: 40px; }
-        .section-title h2 { font-family: 'Cinzel', serif; font-size: 2.5rem; color: var(--gold); margin-bottom: 10px; }
-        .section-title p { color: var(--text-muted); font-weight: 300; letter-spacing: 2px; text-transform: uppercase; font-size: 0.8rem; }
+        .btn-cart-toggle {
+            background: transparent; border: 1px solid var(--tk-gold-primary);
+            color: var(--tk-gold-primary); padding: 10px 25px; border-radius: 30px;
+            font-family: 'Montserrat'; font-weight: 700; font-size: 0.75rem;
+            letter-spacing: 2px; cursor: pointer; transition: 0.4s;
+            display: flex; align-items: center; gap: 8px; text-transform: uppercase;
+        }
+        .btn-cart-toggle:hover {
+            background: var(--tk-gold-primary); color: var(--tk-bg-base);
+            transform: translateY(-2px); box-shadow: 0 5px 15px var(--tk-border-glow);
+        }
+        .cart-badge {
+            background: var(--tk-text-main); color: var(--tk-bg-base);
+            min-width: 20px; height: 20px; border-radius: 10px; display: inline-flex;
+            justify-content: center; align-items: center; font-size: 0.65rem; font-weight: 900;
+            padding: 0 6px; transition: transform 0.3s var(--tk-ease-bounce);
+        }
 
-        .category-tabs { display: flex; justify-content: center; gap: 15px; margin-bottom: 50px; flex-wrap: wrap; }
-        .tab-btn { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: var(--text-muted); padding: 12px 30px; border-radius: 30px; cursor: pointer; transition: var(--transition); font-family: 'Montserrat', sans-serif; text-transform: uppercase; letter-spacing: 1.5px; font-size: 0.85rem; font-weight: 600; outline: none; }
-        .tab-btn.active, .tab-btn:hover { background: var(--gold); color: var(--bg-dark); border-color: var(--gold); box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3); }
-
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 40px; }
+        /* ==========================================================================
+           5. SINGLE PAGE APP (SPA) SCENES
+           ========================================================================== */
+        .spa-scene { display: none; opacity: 0; width: 100%; min-height: 100vh; }
+        .spa-scene.is-active { display: block; animation: sceneEnter 0.8s var(--tk-ease-fluid) forwards; }
         
-        .card { background: var(--surface); border: 1px solid rgba(255,255,255,0.03); border-radius: 4px; padding: 20px; transition: var(--transition); position: relative; overflow: hidden; backdrop-filter: blur(10px); display: flex; flex-direction: column; animation: fadeIn 0.6s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes sceneEnter {
+            from { opacity: 0; transform: translateY(15px) scale(0.99); filter: blur(5px); }
+            to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+        }
+
+        /* ==========================================================================
+           6. HERO SECTION
+           ========================================================================== */
+        .section-hero {
+            height: 100vh; display: flex; flex-direction: column; justify-content: center;
+            align-items: center; text-align: center; position: relative; padding: 0 5%;
+        }
+        .hero-title {
+            font-family: 'Cinzel', serif; font-size: clamp(3.5rem, 10vw, 8rem);
+            font-weight: 900; line-height: 0.9; margin-bottom: 20px;
+            text-transform: uppercase; letter-spacing: -2px;
+        }
+        .hero-subtitle {
+            font-family: 'Montserrat'; font-weight: 300; font-size: clamp(0.8rem, 2vw, 1.2rem);
+            letter-spacing: 15px; color: var(--tk-gold-primary); text-transform: uppercase;
+            margin-bottom: 50px; text-indent: 15px; /* Compensa o tracking */
+        }
+        .btn-cta-main {
+            background: var(--tk-gold-primary); color: var(--tk-bg-base); border: none;
+            padding: 20px 60px; font-family: 'Montserrat'; font-weight: 800;
+            font-size: 0.85rem; letter-spacing: 4px; text-transform: uppercase;
+            cursor: pointer; position: relative; overflow: hidden; border-radius: 2px;
+            transition: all 0.4s var(--tk-ease-fluid);
+        }
+        .btn-cta-main::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: 0.6s;
+        }
+        .btn-cta-main:hover::before { left: 100%; }
+        .btn-cta-main:hover { transform: scale(1.05); box-shadow: 0 15px 30px var(--tk-border-glow); }
+
+        /* ==========================================================================
+           7. CATALOG & GRID SYSTEM
+           ========================================================================== */
+        .container { max-width: 1440px; margin: 0 auto; padding: 0 5%; width: 100%; }
         
-        .card:hover { border-color: rgba(212, 175, 55, 0.4); transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        .catalog-controls {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 50px; flex-wrap: wrap; gap: 20px; border-bottom: 1px solid var(--tk-border-subtle);
+            padding-bottom: 20px;
+        }
+
+        .filter-group { display: flex; gap: 30px; }
+        .filter-btn {
+            background: none; border: none; color: var(--tk-text-muted); font-family: 'Cinzel';
+            font-size: 1.1rem; letter-spacing: 3px; cursor: pointer; transition: 0.3s;
+            padding-bottom: 5px; position: relative;
+        }
+        .filter-btn::after {
+            content: ''; position: absolute; bottom: -21px; left: 0; width: 0%;
+            height: 2px; background: var(--tk-gold-primary); transition: 0.4s var(--tk-ease-fluid);
+        }
+        .filter-btn.is-active { color: var(--tk-gold-primary); font-weight: 700; }
+        .filter-btn.is-active::after { width: 100%; }
+
+        .sort-select {
+            background: var(--tk-bg-base); color: var(--tk-text-main); border: 1px solid var(--tk-border-subtle);
+            padding: 10px 15px; font-family: 'Montserrat'; font-size: 0.8rem; cursor: pointer;
+            outline: none; transition: 0.3s;
+        }
+        .sort-select:focus { border-color: var(--tk-gold-primary); }
+
+        /* O Grid Master - Ajustado para 2x2 no mobile */
+        .product-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 40px;
+        }
+
+        /* ==========================================================================
+           8. PRODUCT CARD ARCHITECTURE
+           ========================================================================== */
+        .card-product {
+            background: var(--tk-bg-surface); border: 1px solid var(--tk-border-subtle);
+            padding: 25px; display: flex; flex-direction: column; position: relative;
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            transition: all 0.5s var(--tk-ease-fluid);
+        }
+        .card-product:hover {
+            transform: translateY(-12px); border-color: rgba(212, 175, 55, 0.4);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8); background: rgba(20,20,20,0.95);
+        }
+
+        .card-badge-stock {
+            position: absolute; top: 15px; left: 15px; background: var(--tk-gold-primary);
+            color: var(--tk-bg-base); font-size: 0.65rem; font-weight: 900; padding: 4px 10px;
+            letter-spacing: 1px; z-index: 10;
+        }
+
+        .card-media {
+            width: 100%; aspect-ratio: 1/1; overflow: hidden; margin-bottom: 25px;
+            cursor: pointer; position: relative; background: #0a0a0a;
+        }
+        .card-media img {
+            width: 100%; height: 100%; object-fit: cover; filter: grayscale(0.2) contrast(1.1);
+            transition: all 1.2s var(--tk-ease-fluid); transform: scale(1.01);
+        }
+        .card-product:hover .card-media img { filter: grayscale(0) contrast(1); transform: scale(1.12); }
+
+        .card-content { flex-grow: 1; display: flex; flex-direction: column; align-items: center; text-align: center; }
         
-        .card-img-wrap { height: 280px; overflow: hidden; border-radius: 4px; margin-bottom: 20px; cursor: pointer; position: relative; background: #111;}
-        .card-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
-        .card:hover .card-img-wrap img { transform: scale(1.08); }
+        .card-title {
+            font-family: 'Cinzel', serif; font-size: 1.1rem; color: var(--tk-text-main);
+            margin-bottom: 5px; letter-spacing: 1px; min-height: 2.8rem;
+            display: flex; align-items: center; justify-content: center;
+        }
         
-        .tag-stock { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.8); color: var(--gold); padding: 5px 10px; font-size: 0.7rem; font-weight: 800; border: 1px solid var(--gold); border-radius: 2px; z-index: 2;}
-
-        .card-title { font-family: 'Cinzel', serif; font-size: 1.1rem; color: var(--white); margin-bottom: 5px; flex-grow: 1; line-height: 1.3;}
-        .card-price { font-size: 1.5rem; color: var(--gold); font-weight: 600; margin-bottom: 20px; }
+        .card-specs { font-size: 0.7rem; color: var(--tk-text-muted); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
         
-        .btn-outline { width: 100%; padding: 15px; background: transparent; border: 1px solid rgba(255,255,255,0.2); color: var(--white); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: var(--transition); border-radius: 2px; }
-        .btn-outline:hover { background: var(--gold); border-color: var(--gold); color: var(--bg-dark); }
+        .card-price {
+            font-size: 1.6rem; font-weight: 300; color: var(--tk-gold-primary);
+            margin-bottom: 20px; font-variant-numeric: tabular-nums;
+        }
 
-        /* =========================================
-           PÁGINA DO PRODUTO (DETALHES)
-        ========================================= */
-        .product-view { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; padding: 40px 5%; max-width: 1400px; margin: 0 auto; align-items: center; }
-        .product-gallery img { width: 100%; border-radius: 4px; box-shadow: 0 20px 50px rgba(0,0,0,0.6); }
-        .product-details h1 { font-family: 'Cinzel', serif; font-size: 3.5rem; color: var(--gold); line-height: 1.1; margin-bottom: 20px; }
-        .product-details .desc { color: var(--text-muted); font-size: 1.1rem; line-height: 1.8; margin-bottom: 30px; font-weight: 300; }
-        .product-details .price { font-size: 3rem; font-weight: 200; color: var(--white); margin-bottom: 40px; }
+        .btn-add-cart {
+            width: 100%; padding: 15px; background: transparent; border: 1px solid var(--tk-border-glow);
+            color: var(--tk-gold-primary); font-family: 'Montserrat'; font-weight: 700;
+            font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase;
+            cursor: pointer; transition: all 0.3s;
+        }
+        .btn-add-cart:hover { background: var(--tk-gold-primary); color: var(--tk-bg-base); }
+        .btn-add-cart:active { transform: scale(0.97); }
+
+        /* ==========================================================================
+           9. PRODUCT DETAIL VIEW
+           ========================================================================== */
+        .detail-wrapper {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+        }
+        .detail-gallery { position: relative; border: 1px solid var(--tk-border-subtle); padding: 20px; background: rgba(0,0,0,0.3); }
+        .detail-gallery img { width: 100%; height: auto; display: block; filter: drop-shadow(0 30px 40px rgba(0,0,0,0.8)); }
         
-        .urgency-box { background: rgba(255, 59, 48, 0.1); border-left: 3px solid var(--danger); padding: 15px; margin-bottom: 30px; }
-        .urgency-box p { color: var(--danger); font-size: 0.9rem; font-weight: 600; }
+        .detail-info { display: flex; flex-direction: column; align-items: flex-start; }
+        .detail-ref { font-size: 0.8rem; color: var(--tk-gold-primary); letter-spacing: 3px; margin-bottom: 10px; }
+        .detail-name { font-family: 'Cinzel'; font-size: clamp(2.5rem, 4vw, 4rem); line-height: 1.1; margin-bottom: 20px; text-transform: uppercase;}
+        .detail-desc { font-weight: 300; color: #b3b3b3; line-height: 1.8; margin-bottom: 30px; font-size: 1.05rem; }
+        
+        .tech-specs-list {
+            list-style: none; width: 100%; border-top: 1px solid var(--tk-border-subtle);
+            margin-bottom: 40px;
+        }
+        .tech-specs-list li {
+            display: flex; justify-content: space-between; padding: 15px 0;
+            border-bottom: 1px solid var(--tk-border-subtle); font-size: 0.85rem;
+        }
+        .tech-specs-list span:first-child { color: var(--tk-text-muted); letter-spacing: 1px; }
+        .tech-specs-list span:last-child { font-weight: 600; text-align: right;}
 
-        .btn-back { background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.9rem; margin: 20px 5%; display: flex; align-items: center; gap: 10px; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;}
-        .btn-back:hover { color: var(--gold); }
+        .detail-price { font-size: 3.5rem; font-weight: 200; color: var(--tk-gold-primary); margin-bottom: 40px; line-height: 1;}
+        
+        .detail-actions { display: flex; gap: 20px; width: 100%; }
+        .btn-back-link {
+            background: none; border: none; color: var(--tk-text-muted); font-family: 'Montserrat';
+            font-weight: 600; letter-spacing: 2px; cursor: pointer; display: flex; align-items: center; gap: 10px;
+            transition: 0.3s; margin-top: 40px; text-transform: uppercase; font-size: 0.8rem;
+        }
+        .btn-back-link:hover { color: var(--tk-text-main); }
 
-        /* =========================================
-           CARRINHO E SIDEBAR
-        ========================================= */
-        #cart-drawer { position: fixed; top: 0; right: -100%; width: 450px; height: 100vh; background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(25px); box-shadow: -10px 0 30px rgba(0,0,0,0.8); border-left: 1px solid rgba(212,175,55,0.2); z-index: 2000; transition: right 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); display: flex; flex-direction: column; padding: 30px; }
-        #cart-drawer.open { right: 0; }
-        #cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(3px); z-index: 1999; opacity: 0; visibility: hidden; transition: 0.4s; }
-        #cart-overlay.open { opacity: 1; visibility: visible; }
+        /* ==========================================================================
+           10. ADVANCED CART DRAWER
+           ========================================================================== */
+        .cart-drawer-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.8); z-index: 1999; backdrop-filter: blur(3px);
+            opacity: 0; visibility: hidden; transition: 0.4s;
+        }
+        .cart-drawer-overlay.is-visible { opacity: 1; visibility: visible; }
 
-        .cart-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px; margin-bottom: 20px;}
-        .cart-header h2 { font-family: 'Cinzel', serif; color: var(--gold); }
-        .close-btn { background: none; border: none; color: var(--text-muted); font-size: 2rem; cursor: pointer; transition: 0.3s; }
-        .close-btn:hover { color: var(--danger); transform: rotate(90deg); }
+        .cart-drawer {
+            position: fixed; top: 0; right: -100%; width: 500px; max-width: 100vw; height: 100vh;
+            background: rgba(3, 3, 3, 0.98); border-left: 1px solid var(--tk-border-subtle);
+            z-index: 2000; transition: right 0.6s var(--tk-ease-fluid);
+            display: flex; flex-direction: column; padding: 40px;
+            box-shadow: -20px 0 50px rgba(0,0,0,0.8);
+        }
+        .cart-drawer.is-open { right: 0; }
 
-        .shipping-tracker { background: rgba(255,255,255,0.03); padding: 15px; border-radius: 4px; margin-bottom: 20px; text-align: center; }
-        .shipping-text { font-size: 0.85rem; font-weight: 600; margin-bottom: 10px; color: var(--text-main); }
-        .shipping-text span { color: var(--gold); }
-        .progress-bar { height: 6px; background: #222; border-radius: 3px; overflow: hidden; }
-        .progress-fill { height: 100%; background: var(--gold); width: 0%; transition: width 0.8s ease; }
-        .progress-fill.success { background: var(--success); }
+        .cart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .cart-header h2 { font-family: 'Cinzel'; font-size: 1.5rem; letter-spacing: 4px; color: var(--tk-gold-primary); }
+        .btn-close-cart { background: none; border: none; color: #fff; font-size: 2.5rem; cursor: pointer; line-height: 1; transition: 0.3s; }
+        .btn-close-cart:hover { color: var(--tk-danger); transform: rotate(90deg); }
 
-        .cart-items { flex-grow: 1; overflow-y: auto; padding-right: 10px; }
-        .cart-item { display: flex; gap: 15px; margin-bottom: 20px; align-items: center; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 4px; border: 1px solid transparent; transition: 0.3s;}
-        .cart-item:hover { border-color: rgba(255,255,255,0.1); }
-        .cart-item img { width: 70px; height: 70px; object-fit: cover; border-radius: 2px; }
-        .cart-item-info { flex-grow: 1; }
-        .cart-item-title { font-size: 0.9rem; font-weight: 600; margin-bottom: 5px; }
-        .cart-item-price { color: var(--gold); font-size: 0.9rem; font-weight: 800; }
-        .remove-item { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.8rem; text-decoration: underline; margin-top: 5px; }
-        .remove-item:hover { color: var(--danger); }
+        /* Shipping Progress Module */
+        .shipping-module {
+            background: rgba(255,255,255,0.02); border: 1px solid var(--tk-border-subtle);
+            padding: 20px; border-radius: 4px; margin-bottom: 30px; text-align: center;
+        }
+        .shipping-status { font-size: 0.8rem; letter-spacing: 1px; color: #ccc; margin-bottom: 12px; }
+        .shipping-status strong { color: var(--tk-gold-primary); font-weight: 800; }
+        .shipping-track { width: 100%; height: 4px; background: #222; border-radius: 2px; overflow: hidden; }
+        .shipping-fill { height: 100%; background: var(--tk-gold-primary); width: 0%; transition: width 0.8s var(--tk-ease-bounce), background 0.3s; }
+        .shipping-fill.is-free { background: var(--tk-success); }
 
-        .cart-footer { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; }
-        .cart-total-row { display: flex; justify-content: space-between; font-size: 1.2rem; margin-bottom: 20px; align-items: center;}
-        .cart-total-val { font-size: 1.8rem; font-weight: 800; color: var(--gold); }
+        .cart-items-container { flex-grow: 1; overflow-y: auto; padding-right: 10px; }
+        
+        .cart-item {
+            display: grid; grid-template-columns: 80px 1fr auto; gap: 20px; align-items: center;
+            padding: 15px; background: rgba(255,255,255,0.02); border: 1px solid var(--tk-border-glow);
+            margin-bottom: 15px; border-radius: 4px;
+        }
+        .cart-item-img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 2px; }
+        .cart-item-details { display: flex; flex-direction: column; gap: 5px; }
+        .cart-item-name { font-size: 0.8rem; font-weight: 700; line-height: 1.3; }
+        .cart-item-price { color: var(--tk-gold-primary); font-size: 0.95rem; font-weight: 600; }
+        
+        .cart-item-actions { display: flex; align-items: center; gap: 10px; background: #111; padding: 4px; border-radius: 4px; border: 1px solid #333; }
+        .btn-qty { background: transparent; border: none; color: #fff; width: 24px; height: 24px; cursor: pointer; font-size: 1.2rem; display: flex; justify-content: center; align-items: center; transition: 0.2s;}
+        .btn-qty:hover { color: var(--tk-gold-primary); }
+        .item-qty-val { font-size: 0.85rem; font-weight: 700; min-width: 20px; text-align: center; font-variant-numeric: tabular-nums;}
 
-        .btn-whatsapp { width: 100%; padding: 18px; background: #25D366; color: white; border: none; border-radius: 4px; font-size: 1rem; font-weight: 800; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; transition: var(--transition); box-shadow: 0 10px 20px rgba(37, 211, 102, 0.2); }
-        .btn-whatsapp:hover { background: #1EBE5D; transform: translateY(-2px); box-shadow: 0 15px 25px rgba(37, 211, 102, 0.4); }
-        .btn-whatsapp:disabled { background: #333; color: #666; cursor: not-allowed; box-shadow: none; transform: none; }
+        .cart-footer { margin-top: auto; border-top: 1px solid var(--tk-border-subtle); padding-top: 30px; }
+        .cart-summary-row { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 25px; }
+        .cart-summary-label { font-size: 0.85rem; letter-spacing: 2px; color: var(--tk-text-muted); text-transform: uppercase;}
+        .cart-total-value { font-size: 2.2rem; font-weight: 900; color: var(--tk-gold-primary); line-height: 1; font-variant-numeric: tabular-nums; }
+        
+        .btn-checkout {
+            width: 100%; padding: 22px; background: var(--tk-gold-primary); border: none;
+            color: var(--tk-bg-base); font-family: 'Montserrat'; font-weight: 900;
+            font-size: 0.9rem; letter-spacing: 3px; text-transform: uppercase;
+            cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px;
+        }
+        .btn-checkout:hover { background: var(--tk-gold-light); transform: translateY(-2px); box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3); }
+        .btn-checkout:disabled { background: #333; color: #666; cursor: not-allowed; transform: none; box-shadow: none;}
 
-        /* =========================================
-           TOAST NOTIFICATIONS
-        ========================================= */
-        #toast-container { position: fixed; bottom: 20px; left: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
-        .toast { background: var(--surface); backdrop-filter: blur(10px); border: 1px solid rgba(212,175,55,0.3); color: var(--white); padding: 15px 20px; border-radius: 4px; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); transform: translateX(-150%); opacity: 0; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .toast.show { transform: translateX(0); opacity: 1; }
-        .toast-icon { width: 30px; height: 30px; background: var(--gold); color: var(--bg-dark); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; }
+        /* ==========================================================================
+           11. TOAST NOTIFICATION SYSTEM
+           ========================================================================== */
+        .toast-container { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 10px; z-index: 9999; pointer-events: none;}
+        .toast-msg {
+            background: rgba(212, 175, 55, 0.95); color: #000; padding: 14px 30px;
+            font-family: 'Montserrat'; font-weight: 800; font-size: 0.8rem; letter-spacing: 2px;
+            border-radius: 40px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); text-transform: uppercase;
+            animation: toastIn 0.4s var(--tk-ease-bounce) forwards; display: flex; align-items: center; gap: 10px;
+        }
+        .toast-msg.is-leaving { animation: toastOut 0.4s ease-in forwards; }
+        @keyframes toastIn { from { opacity: 0; transform: translateY(50px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        @keyframes toastOut { from { opacity: 1; transform: translateY(0) scale(1); } to { opacity: 0; transform: translateY(20px) scale(0.9); } }
 
-        /* =========================================
-           RESPONSIVIDADE (MOBILE)
-        ========================================= */
+        /* ==========================================================================
+           12. RESPONSIVO: GRADE 2x2 MOBILE PERFECTED
+           ========================================================================== */
+        @media (max-width: 992px) {
+            .detail-wrapper { grid-template-columns: 1fr; gap: 40px; }
+            .detail-name { font-size: 2.8rem; }
+        }
+
         @media (max-width: 768px) {
-            .product-view { grid-template-columns: 1fr; gap: 30px; padding-top: 20px; }
-            .hero h1 { font-size: 2.5rem; }
-            .hero p { font-size: 1rem; padding: 0 20px; }
-            #cart-drawer { width: 100%; right: -100%; }
-            .product-details h1 { font-size: 2.2rem; }
+            .site-header { padding: 15px 5%; flex-wrap: wrap; justify-content: center; gap: 15px; }
+            .brand-logo { font-size: 1.6rem; letter-spacing: 5px; width: 100%; justify-content: center; }
+            .header-controls { width: 100%; justify-content: space-between; }
             
-            .category-tabs { gap: 8px; }
-            .tab-btn { padding: 8px 15px; font-size: 0.75rem; }
+            .search-input { width: 100%; max-width: 200px; padding: 10px 15px; font-size: 0.75rem; }
+            .search-input:focus { width: 100%; max-width: 240px; }
+            .btn-cart-toggle { padding: 10px 15px; font-size: 0.7rem; }
             
-            /* GRID 2x2 MOBILE */
-            .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-            .card { padding: 10px; }
-            .card-img-wrap { height: 150px; margin-bottom: 12px; }
-            .card-title { font-size: 0.8rem; overflow: hidden; display: -webkit-box; line-clamp: 2; -webkit-box-orient: vertical; margin-bottom: 8px; }
-            .card-price { font-size: 1rem; margin-bottom: 10px; }
-            .tag-stock { font-size: 0.6rem; padding: 3px 6px; }
-            .btn-outline { padding: 8px; font-size: 0.65rem; }
+            .section-hero { padding-top: 100px; }
+            .hero-title { font-size: 2.8rem; }
+            .hero-subtitle { font-size: 0.7rem; letter-spacing: 8px; margin-bottom: 40px;}
+            
+            .catalog-controls { flex-direction: column; align-items: center; gap: 20px; }
+            .filter-group { width: 100%; justify-content: space-between; gap: 10px; }
+            .filter-btn { font-size: 0.8rem; letter-spacing: 2px; }
+            .sort-select { width: 100%; }
+
+            /* CORE: MÁGICA DO 2x2 E-COMMERCE */
+            .product-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            
+            .card-product { padding: 12px; border-radius: 4px; }
+            .card-media { margin-bottom: 12px; }
+            .card-badge-stock { font-size: 0.55rem; padding: 3px 6px; top: 8px; left: 8px; }
+            
+            .card-title { font-size: 0.7rem; letter-spacing: 0px; min-height: 2.2rem; line-height: 1.3; margin-bottom: 2px;}
+            .card-specs { font-size: 0.55rem; margin-bottom: 8px; }
+            .card-price { font-size: 1.1rem; margin-bottom: 12px; }
+            
+            .btn-add-cart { padding: 10px; font-size: 0.6rem; letter-spacing: 1px; }
+
+            .cart-drawer { width: 100%; padding: 25px 20px; }
+            .cart-item { grid-template-columns: 60px 1fr; gap: 15px; padding: 12px; position: relative; }
+            .cart-item-actions { position: absolute; bottom: 12px; right: 12px; }
+            .cart-total-value { font-size: 1.8rem; }
         }
+
+        /* Util Classes */
+        .empty-state { text-align: center; padding: 80px 20px; color: var(--tk-text-muted); }
+        .empty-icon { font-size: 3rem; margin-bottom: 20px; opacity: 0.5; }
+        .empty-text { font-family: 'Cinzel'; font-size: 1.2rem; letter-spacing: 2px; }
     </style>
 </head>
 <body>
 
-    <header id="main-header">
-        <div class="logo" onclick="app.navigate('home')">TIME KEEPR</div>
-        <button class="btn-cart" onclick="app.toggleCart()">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-            <span id="cart-counter">0</span>
-        </button>
+    <div class="ambient-glow"></div>
+    <div class="cart-drawer-overlay" id="js-cart-overlay"></div>
+
+    <header class="site-header" id="js-header">
+        <div class="brand-logo" onclick="TKApp.Router.navigate('home')">
+            TIME<span>KEEPR</span>
+        </div>
+        <div class="header-controls">
+            <div class="search-wrapper">
+                <input type="text" class="search-input" id="js-search-input" placeholder="Buscar por modelo...">
+            </div>
+            <button class="btn-cart-toggle" onclick="TKApp.Cart.toggle()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                ACERVO
+                <span class="cart-badge" id="js-cart-badge">0</span>
+            </button>
+        </div>
     </header>
 
     <main>
-        <div id="scene-home" class="scene active">
-            <section class="hero">
-                <h1>O Seu Tempo<br><span>Vale Ouro</span></h1>
-                <p>Relógios projetados para homens e mulheres que não seguem tendências, mas as criam.</p>
-                <button class="btn-primary" onclick="app.navigate('catalog')">Acessar Coleção</button>
-            </section>
-        </div>
+        <section id="scene-home" class="spa-scene is-active">
+            <div class="section-hero">
+                <h1 class="hero-title">Legacy <span>Collection 2026</span></h1>
+                <p class="hero-subtitle">Alta Relojoaria para quem domina o próprio tempo</p>
+                <button class="btn-cta-main" onclick="TKApp.Router.navigate('catalog')">Acessar Catálogo</button>
+            </div>
+        </section>
 
-        <div id="scene-catalog" class="scene">
-            <div class="catalog-container">
-                <div class="section-title">
-                    <h2>Coleção Legacy 2026</h2>
-                    <p>Escolha sua categoria</p>
+        <section id="scene-catalog" class="spa-scene" style="padding-top: 140px; padding-bottom: 100px;">
+            <div class="container">
+                <div class="catalog-controls">
+                    <div class="filter-group" id="js-filter-group">
+                        <button class="filter-btn is-active" data-filter="ALL">TODA A COLEÇÃO</button>
+                        <button class="filter-btn" data-filter="M">MASCULINOS</button>
+                        <button class="filter-btn" data-filter="F">FEMININOS</button>
+                    </div>
+                    <select class="sort-select" id="js-sort-select">
+                        <option value="default">ORDENAR POR: DESTAQUE</option>
+                        <option value="price-asc">MENOR PREÇO</option>
+                        <option value="price-desc">MAIOR PREÇO</option>
+                        <option value="name-asc">ALFABÉTICA (A-Z)</option>
+                    </select>
                 </div>
                 
-                <div class="category-tabs">
-                    <button class="tab-btn active" onclick="app.filterCatalog('ALL', this)">Ver Todos</button>
-                    <button class="tab-btn" onclick="app.filterCatalog('M', this)">Masculinos</button>
-                    <button class="tab-btn" onclick="app.filterCatalog('F', this)">Femininos</button>
-                </div>
-
-                <div class="grid" id="catalog-grid">
-                    </div>
+                <div class="product-grid" id="js-product-grid"></div>
+                <div id="js-empty-catalog" style="display:none;"></div>
             </div>
-        </div>
+        </section>
 
-        <div id="scene-product" class="scene">
-            <button class="btn-back" onclick="app.navigate('catalog')">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-                Voltar ao Catálogo
-            </button>
-            <div class="product-view" id="product-view-container">
-                </div>
-        </div>
+        <section id="scene-product" class="spa-scene" style="padding-top: 140px; padding-bottom: 100px;">
+            <div class="container" id="js-product-detail"></div>
+        </section>
     </main>
 
-    <div id="cart-overlay" onclick="app.toggleCart()"></div>
-    <aside id="cart-drawer">
+    <aside class="cart-drawer" id="js-cart-drawer">
         <div class="cart-header">
-            <h2>Seu Acervo</h2>
-            <button class="close-btn" onclick="app.toggleCart()">&times;</button>
+            <h2>MEU ACERVO</h2>
+            <button class="btn-close-cart" onclick="TKApp.Cart.toggle()">&times;</button>
         </div>
-
-        <div class="shipping-tracker">
-            <div class="shipping-text" id="shipping-msg">Adicione <span>R$ 500,00</span> para Frete Grátis</div>
-            <div class="progress-bar">
-                <div class="progress-fill" id="shipping-progress"></div>
+        
+        <div class="shipping-module">
+            <div class="shipping-status" id="js-shipping-msg">Adicione <strong>R$ 500,00</strong> para Frete Grátis</div>
+            <div class="shipping-track">
+                <div class="shipping-fill" id="js-shipping-bar"></div>
             </div>
         </div>
 
-        <div class="cart-items" id="cart-items-list"></div>
-
+        <div class="cart-items-container" id="js-cart-list"></div>
+        
         <div class="cart-footer">
-            <div class="cart-total-row">
-                <span>Total Estimado</span>
-                <span class="cart-total-val" id="cart-total-value">R$ 0,00</span>
+            <div class="cart-summary-row">
+                <span class="cart-summary-label">Subtotal Estimado</span>
+                <span class="cart-total-value" id="js-cart-total">R$ 0,00</span>
             </div>
-            <button class="btn-whatsapp" id="btn-checkout" onclick="app.checkout()" disabled>
-                Finalizar no WhatsApp
+            <button class="btn-checkout" id="js-btn-checkout" onclick="TKApp.Cart.checkout()" disabled>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                CONCLUIR NO WHATSAPP
             </button>
         </div>
     </aside>
 
-    <div id="toast-container"></div>
+    <div class="toast-container" id="js-toast-root"></div>
 
     <script>
-        const app = (() => {
-            const WHATSAPP_NUMBER = "5598988669986"; 
-            const FREE_SHIPPING_THRESHOLD = 500.00; 
+        /**
+         * TIME KEEPR - CORE APPLICATION LOGIC
+         * Arquitetura Baseada em POO (Programação Orientada a Objetos) e Módulos.
+         */
+        const TKApp = (() => {
+            
+            // ==========================================
+            // 1. CONFIGURAÇÕES GERAIS E DADOS (MOCK API)
+            // ==========================================
+            const CONFIG = {
+                WHATSAPP_NUMBER: "5598988669986",
+                FREE_SHIPPING_THRESHOLD: 500.00,
+                CURRENCY_LOCALE: 'pt-BR',
+                CURRENCY_CODE: 'BRL',
+                STORAGE_KEY: '@TimeKeepr:CartState'
+            };
 
-            // BANCO DE DADOS ATUALIZADO COM +20 ESPAÇOS
-            const products = [
-                // === MASCULINOS ===
-                { id: 1, name: "Winneg Automatico", price: 229.90, img: "https://ae01.alicdn.com/kf/S1af423da85dc435fb4445981c18f265ao.jpg", stock: 1, gender: 'M', desc: "O ápice da engenharia no seu pulso. Mecanismo exposto e design industrial robusto para homens de pulso firme." },
-                { id: 2, name: "Forsining Master", price: 219.90, img: "https://i.ebayimg.com/images/g/xa8AAOSwI3hicfgd/s-l400.jpg", stock: 1, gender: 'M', desc: "A essência do homem clássico. Engrenagens visíveis que demonstram domínio absoluto sobre o próprio tempo." },
-                { id: 3, name: "Binbond Horloge Black", price: 179.90, img: "https://http2.mlstatic.com/D_NQ_NP_845826-CBT94501229547_102025-O-relogio-masculino-suico-versatil-moderno-impermeavel-lum.webp", stock: 1, gender: 'M', desc: "Agressividade e mistério em aço negro. Feito para o homem moderno que exige durabilidade e presença marcante." },
-                { id: 4, name: "Binbond Horloge Silver", price: 169.90, img: "https://dcdn-us.mitiendanube.com/stores/006/876/038/products/binbond-8181-preto-prateado-638b5729dd4ab45db017639070883712-640-0.webp", stock: 1, gender: 'M', desc: "Versatilidade e status. O contraste do mostrador escuro com o aço prateado perfeito para reuniões de negócios." },
-                { id: 5, name: "Vandaguarda Diamond", price: 189.90, img: "https://dcdn-us.mitiendanube.com/stores/006/876/038/products/1000090205-deac669762d813351917630780190748-320-0.webp", stock: 1, gender: 'M', desc: "Ostentação e poder. Design europeu cravejado que impõe respeito e atrai olhares em qualquer evento de luxo." },
-                { id: 6, name: "OPK Quartz", price: 159.90, img: "https://dcdn-us.mitiendanube.com/stores/006/876/038/products/1000103090-9cffe9e594ce2e0e0117671061192121-320-0.webp", stock: 1, gender: 'M', desc: "O parceiro do homem corporativo. Perfil ultrafino e minimalista, desenhado para deslizar perfeitamente sob a camisa social." },
-                { id: 7, name: "Curren Cobre", price: 159.90, img: "https://dcdn-us.mitiendanube.com/stores/006/876/038/products/1000090202-765070a7d714989b5417632183305158-320-0.webp", stock: 1, gender: 'M', desc: "Elegância rústica. O acabamento acobreado exclusivo traz um toque vintage e imponente para o estilo masculino." },
-                { id: 8, name: "Oruss 1853 Classic", price: 129.90, img: "https://dcdn-us.mitiendanube.com/stores/006/876/038/products/inbound7295089341951479154-00b23894acbabdd52717614131309472-320-0.webp", stock: 1, gender: 'M', desc: "Tradição e respeito. Uma peça com pegada retrô para o cavalheiro que valoriza a verdadeira arte da relojoaria." },
-                { id: 9, name: "Oruss 1853 Dark", price: 129.90, img: "https://dcdn-us.mitiendanube.com/stores/006/876/038/products/inbound2992636078921850236-1d12ce720b33e352f217614131541944-320-0.webp", stock: 1, gender: 'M', desc: "Sobriedade noturna. A versão escurecida do clássico 1853 para homens que buscam discrição com alta classe." },
-                { id: 10, name: "Poedagar Deluxe Edition", price: 159.90, img: "https://sc04.alicdn.com/kf/H524f1ec4448f4603a83644e41a093c1eL.jpg", stock: 1, gender: 'M', desc: "Para quem não para. Design esportivo de alta performance com ponteiros luminosos para o homem sempre em movimento." },
+            // Banco de Dados Expandido com Especificações Técnicas Reais
+            const DATABASE = [
+                { id: 1, name: "Winneg Automatico", price: 229.90, img: "https://ae01.alicdn.com/kf/S1af423da85dc435fb4445981c18f265ao.jpg", stock: 5, gender: 'M', movement: "Automático Suíço", glass: "Safira Anti-risco", waterResist: "5 ATM", desc: "O ápice da engenharia no seu pulso. Mecanismo exposto e design industrial robusto para homens de pulso firme." },
+                { id: 2, name: "Forsining Master", price: 219.90, img: "https://i.ebayimg.com/images/g/xa8AAOSwI3hicfgd/s-l400.jpg", stock: 8, gender: 'M', movement: "Mecânico Corda Manual", glass: "Cristal Mineral", waterResist: "3 ATM", desc: "A essência do homem clássico. Engrenagens visíveis que demonstram domínio absoluto." },
+                { id: 3, name: "Binbond Horloge Black", price: 179.90, img: "https://http2.mlstatic.com/D_NQ_NP_845826-CBT94501229547_102025-O-relogio-masculino-suico-versatil-moderno-impermeavel-lum.webp", stock: 12, gender: 'M', movement: "Quartzo Alta Precisão", glass: "Hardlex", waterResist: "3 ATM", desc: "Agressividade e mistério em aço negro. Feito para o homem moderno que exige durabilidade e presença." },
+                { id: 4, name: "Binbond Horloge Silver", price: 169.90, img: "https://dcdn-us.mitiendanube.com/stores/006/876/038/products/binbond-8181-preto-prateado-638b5729dd4ab45db017639070883712-640-0.webp", stock: 6, gender: 'M', movement: "Quartzo", glass: "Hardlex", waterResist: "3 ATM", desc: "Versatilidade e status. O contraste do mostrador escuro com o aço prateado perfeito para reuniões." },
+                { id: 5, name: "Vandaguarda Diamond", price: 189.90, img: "https://dcdn-us.mitiendanube.com/stores/006/876/038/products/1000090205-deac669762d813351917630780190748-320-0.webp", stock: 4, gender: 'M', movement: "Quartzo Premium", glass: "Safira Curvada", waterResist: "5 ATM", desc: "Ostentação e poder. Design europeu cravejado que impõe respeito em qualquer evento de luxo." },
+                { id: 6, name: "OPK Quartz", price: 159.90, img: "https://dcdn-us.mitiendanube.com/stores/006/876/038/products/1000103090-9cffe9e594ce2e0e0117671061192121-320-0.webp", stock: 15, gender: 'M', movement: "Quartzo Slim", glass: "Cristal Mineral", waterResist: "3 ATM", desc: "O parceiro do homem corporativo. Perfil ultrafino e minimalista, desenhado para deslizar sob a camisa." },
+                { id: 7, name: "Curren Cobre", price: 159.90, img: "https://dcdn-us.mitiendanube.com/stores/006/876/038/products/1000090202-765070a7d714989b5417632183305158-320-0.webp", stock: 9, gender: 'M', movement: "Quartzo Cronógrafo", glass: "Hardlex", waterResist: "3 ATM", desc: "Elegância rústica. O acabamento acobreado exclusivo traz um toque vintage e imponente." },
+                { id: 8, name: "Oruss 1853 Classic", price: 129.90, img: "https://dcdn-us.mitiendanube.com/stores/006/876/038/products/inbound7295089341951479154-00b23894acbabdd52717614131309472-320-0.webp", stock: 7, gender: 'M', movement: "Quartzo", glass: "Cristal Mineral", waterResist: "3 ATM", desc: "Tradição e respeito. Uma peça com pegada retrô para o cavalheiro que valoriza a verdadeira arte." },
+                { id: 9, name: "Oruss 1853 Dark", price: 129.90, img: "https://dcdn-us.mitiendanube.com/stores/006/876/038/products/inbound2992636078921850236-1d12ce720b33e352f217614131541944-320-0.webp", stock: 11, gender: 'M', movement: "Quartzo", glass: "Cristal Mineral", waterResist: "3 ATM", desc: "Sobriedade noturna. A versão escurecida do clássico 1853 para homens que buscam discrição." },
+                { id: 10, name: "Poedagar Deluxe Edition", price: 159.90, img: "https://sc04.alicdn.com/kf/H524f1ec4448f4603a83644e41a093c1eL.jpg", stock: 14, gender: 'M', movement: "Quartzo Esportivo", glass: "Hardlex Anti-reflexo", waterResist: "5 ATM", desc: "Para quem não para. Design esportivo de alta performance com ponteiros luminosos." },
+                { id: 101, name: "Geneve Aristocrat", price: 139.90, img: "https://http2.mlstatic.com/D_Q_NP_2X_880905-MLB108545007037_032026-P.webp", stock: 10, gender: 'M', movement: "Quartzo", glass: "Cristal", waterResist: "3 ATM", desc: "O tempo é o único luxo que não se pode recuperar. All Black: Discrição para quem tem presença absoluta." },
+                { id: 102, name: "Poedagar Black Deluxe", price: 129.90, img: "https://poedagareco.com/cdn/shop/files/deluxe-preto.webp?v=1769277973&width=700", stock: 10, gender: 'M', movement: "Quartzo", glass: "Hardlex", waterResist: "5 ATM", desc: "Tempo, estilo e presença. Conheça o novo Poedagar Deluxe Edition." },
+                { id: 103, name: "Crrju Matrix 5018", price: 139.90, img: "https://http2.mlstatic.com/D_Q_NP_665008-MLB107600586966_032026-L.webp", stock: 10, gender: 'M', movement: "Quartzo Premium", glass: "Safira", waterResist: "5 ATM", desc: "Relógio imponente, com ponteiros luminosos e calendário funcional. Estilo premium absoluto." },
+                { id: 104, name: "Oceanic Precision", price: 129.90, img: "https://elitewatchess.com/cdn/shop/files/poedagar-luxury-man-quartz-watch-sport-military-watch-for-men-waterproof-luminous-date-chronograph-stainless-steel-mens-970silverblue-white-6708755068469-large.jpg?v=1730744319", stock: 10, gender: 'M', movement: "Cronógrafo Quartzo", glass: "Hardlex", waterResist: "10 ATM", desc: "Cronógrafo militar de alta precisão e resistência à água brutal." },
+                { id: 105, name: "Binbond Denton", price: 134.90, img: "https://http2.mlstatic.com/D_NQ_NP_971558-MLA91919254438_092025-O.webp", stock: 10, gender: 'M', movement: "Quartzo", glass: "Cristal Mineral", waterResist: "3 ATM", desc: "Sofisticação em cada detalhe e presença marcante para o homem moderno." },
+                { id: 106, name: "Curren Imperial", price: 159.90, img: "https://http2.mlstatic.com/D_NQ_NP_727192-MLB48161571217_112021-O.webp", stock: 8, gender: 'M', movement: "Cronógrafo", glass: "Hardlex", waterResist: "3 ATM", desc: "Cronógrafo de alta precisão. Acabamento em aço escovado para um visual executivo de impacto." },
                 
-                // --- NOVOS 10 ESPAÇOS MASCULINOS ---
-                { id: 101, name: "Geneve Aristocrat", price: 139.90, img: "https://http2.mlstatic.com/D_Q_NP_2X_880905-MLB108545007037_032026-P.webp", stock: 1, gender: 'M', desc: "O tempo é o único luxo que não se pode recuperar. Domine cada segundo com a precisão de quem sabe onde quer chegar. All Black: Discrição para quem tem presença absoluta." },
-                { id: 102, name: "Poedagar Deluxe Edition", price: 129.90, img: "https://poedagareco.com/cdn/shop/files/deluxe-preto.webp?v=1769277973&width=700", stock: 1, gender: 'M', desc: "Tempo, estilo e presença. Conheça o novo Poedagar Deluxe Edition. " },
-                { id: 103, name: "Crrju Matrix 5018", price: 139.90, img: "https://http2.mlstatic.com/D_Q_NP_665008-MLB107600586966_032026-L.webp", stock: 1, gender: 'M', desc: "Eleve seu visual com o Crrju Matrix 5018. Um relógio imponente, com ponteiros luminosos e calendário funcional. Estilo premium para todas as ocasiões." },
-                { id: 104, name: "Oceanic Precision", price: 129.90, img: "https://elitewatchess.com/cdn/shop/files/poedagar-luxury-man-quartz-watch-sport-military-watch-for-men-waterproof-luminous-date-chronograph-stainless-steel-mens-970silverblue-white-6708755068469-large.jpg?v=1730744319", stock: 10, gender: 'M', desc: "Descrição para o novo relógio masculino aqui." },
-                { id: 105, name: "Binbond Denton", price: 134.90, img: "https://http2.mlstatic.com/D_NQ_NP_971558-MLA91919254438_092025-O.webp", stock: 1, gender: 'M', desc: "Sofisticação em cada detalhe e presença marcante para o homem moderno. O equilíbrio perfeito entre luxo e precisão." },
-                { id: 106, name: "WWOOR Gold Legacy", price: 179.90, img: "https://http2.mlstatic.com/D_Q_NP_2X_883462-MLB78793725831_082024-P.webp", stock: 1, gender: 'M', desc: "Cronógrafo de alta precisão. Acabamento em aço escovado para um visual executivo de impacto." },
-
-                // === FEMININOS ===
-                { id: 11, name: "Classic OPK", price: 179.90, img: "https://down-br.img.susercontent.com/file/br-11134207-7r98p-lmwtr0fa64ty24", stock: 1, gender: 'F', desc: "Simplicidade e charme. Uma joia atemporal que realça a beleza e a delicadeza do pulso feminino em qualquer ocasião." },
-                { id: 12, name: "Royal Rose Gold", price: 119.90, img: "https://down-br.img.susercontent.com/file/sg-11134301-7rast-mack7ohsh81v13", stock: 1, gender: 'F', desc: "Brilho e sofisticação em ouro rosé. Mostrador texturizado que transborda feminilidade e elegância absoluta." },
-                { id: 13, name: "Chronos Black Edition", price: 99.90, img: "https://down-br.img.susercontent.com/file/sg-11134301-7rasp-macnoa7i6gyjff", stock: 1, gender: 'F', desc: "Para mulheres de atitude. O preto fosco entrega um visual contemporâneo, ousado e cheio de empoderamento." },
-                { id: 14, name: "Executive Gold", price: 139.90, img: "https://http2.mlstatic.com/D_Q_NP_789894-CBT87461640011_072025-O.webp", stock: 1, gender: 'F', desc: "Feito para a mulher líder. Detalhes em dourado que transmitem confiança, sucesso e autoridade no ambiente corporativo." },
-                { id: 15, name: "Minimalist Steel", price: 49.90, img: "https://a-static.mlcdn.com.br/%7Bw%7Dx%7Bh%7D/relogio-feminino-moda-pequena-arabe-relogios-de-quartzo-pulseira-de-couro-relogios-de-pulso-none/aliexpress/207225178/07f97f54c977bc9de18e9f3fb185c86a.jpeg", stock: 1, gender: 'F', desc: "O clássico feminino reinventado. Caixa pequena e pulseira delicada, ideal para mulheres que amam a discrição luxuosa." },
-                { id: 16, name: "Phantom Carbon", price: 99.90, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgNhWcWuRZXGx2tloexYXq0dWWf_ys_hk3T5wlRs8hqrTrDMg5", stock: 0, gender: 'F', desc: "Leveza e modernidade. Um design imponente que une força e sofisticação para o dia a dia da mulher contemporânea." },
-                
-                // --- NOVOS 10 ESPAÇOS FEMININOS ---
-                { id: 201, name: "Saint Germain chelsea Gold", price: 209.90, img: "https://acdn-us.mitiendanube.com/stores/001/116/055/products/dourado-32mm-b-frente-site1-c12a4dc3e8c4f1aeee16339562806579-640-0.webp", stock: 1, gender: 'F', desc: " definição de sofisticação em cada segundo. ✨ O brilho do ouro encontra o design atemporal da Saint Germain para quem não abre mão do extraordinário. Sinta o poder de um acessório que fala por si." },
-                { id: 202, name: "Saint Germain Harlem Silver", price: 169.90, img: "https://acdn-us.mitiendanube.com/stores/001/116/055/products/prata-32mm-b-frente-site1-c61b59639ae96d1dad16339564289314-640-0.webp", stock: 1, gender: 'F', desc: "Um clássico contemporâneo para acompanhar cada segundo do meu dia. ⏱️ Prateado, versátil e essencial." },
-               
+                { id: 11, name: "Classic OPK", price: 179.90, img: "https://down-br.img.susercontent.com/file/br-11134207-7r98p-lmwtr0fa64ty24", stock: 3, gender: 'F', movement: "Quartzo Suíço", glass: "Safira", waterResist: "3 ATM", desc: "Simplicidade e charme. Uma joia atemporal que realça a beleza e a delicadeza do pulso feminino." },
+                { id: 12, name: "Royal Rose Gold", price: 119.90, img: "https://down-br.img.susercontent.com/file/sg-11134301-7rast-mack7ohsh81v13", stock: 6, gender: 'F', movement: "Quartzo", glass: "Cristal Mineral", waterResist: "3 ATM", desc: "Brilho e sofisticação em ouro rosé. Mostrador texturizado que transborda feminilidade." },
+                { id: 13, name: "Chronos Black Edition", price: 99.90, img: "https://down-br.img.susercontent.com/file/sg-11134301-7rasp-macnoa7i6gyjff", stock: 20, gender: 'F', movement: "Quartzo", glass: "Hardlex", waterResist: "3 ATM", desc: "Para mulheres de atitude. O preto fosco entrega um visual contemporâneo, ousado e cheio de empoderamento." },
+                { id: 14, name: "Executive Gold", price: 139.90, img: "https://http2.mlstatic.com/D_Q_NP_789894-CBT87461640011_072025-O.webp", stock: 5, gender: 'F', movement: "Quartzo Premium", glass: "Safira", waterResist: "5 ATM", desc: "Feito para a mulher líder. Detalhes em dourado que transmitem confiança e sucesso corporativo." },
+                { id: 15, name: "Minimalist Steel", price: 49.90, img: "https://a-static.mlcdn.com.br/%7Bw%7Dx%7Bh%7D/relogio-feminino-moda-pequena-arabe-relogios-de-quartzo-pulseira-de-couro-relogios-de-pulso-none/aliexpress/207225178/07f97f54c977bc9de18e9f3fb185c86a.jpeg", stock: 18, gender: 'F', movement: "Quartzo Slim", glass: "Cristal", waterResist: "Splash Proof", desc: "O clássico feminino reinventado. Caixa pequena e pulseira delicada, ideal para discrição luxuosa." },
+                { id: 16, name: "Phantom Carbon", price: 99.90, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgNhWcWuRZXGx2tloexYXq0dWWf_ys_hk3T5wlRs8hqrTrDMg5", stock: 10, gender: 'F', movement: "Quartzo", glass: "Hardlex", waterResist: "3 ATM", desc: "Leveza e modernidade. Um design imponente que une força e sofisticação para o dia a dia." },
+                { id: 201, name: "Saint Germain Chelsea Gold", price: 209.90, img: "https://acdn-us.mitiendanube.com/stores/001/116/055/products/dourado-32mm-b-frente-site1-c12a4dc3e8c4f1aeee16339562806579-640-0.webp", stock: 10, gender: 'F', movement: "Quartzo Japonês", glass: "Cristal Mineral Reforçado", waterResist: "3 ATM", desc: "A definição de sofisticação. O brilho do ouro encontra o design atemporal da Saint Germain." },
+                { id: 202, name: "Saint Germain Harlem Silver", price: 169.90, img: "https://acdn-us.mitiendanube.com/stores/001/116/055/products/prata-32mm-b-frente-site1-c61b59639ae96d1dad16339564289314-640-0.webp", stock: 10, gender: 'F', movement: "Quartzo Japonês", glass: "Cristal Mineral", waterResist: "3 ATM", desc: "Um clássico contemporâneo prateado, versátil e essencial para acompanhar cada segundo." }
             ];
 
-            let cart = [];
-            let currentFilter = 'ALL';
-
-            const formatBRL = (value) => {
-                return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
-            };
-
-            const getProductById = (id) => products.find(p => p.id === id);
-
-            const filterCatalog = (gender, btnElement) => {
-                currentFilter = gender;
-                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-                if (btnElement) btnElement.classList.add('active');
-                renderCatalog();
-            };
-
-            const renderCatalog = () => {
-                const grid = document.getElementById('catalog-grid');
-                const filteredProducts = currentFilter === 'ALL' ? products : products.filter(p => p.gender === currentFilter);
-
-                if(filteredProducts.length === 0) {
-                    grid.innerHTML = '<p style="text-align:center; grid-column: 1/-1; color: #888; font-size: 1.2rem; margin-top: 40px;">Nenhum modelo encontrado.</p>';
-                    return;
+            // ==========================================
+            // 2. UTILITÁRIOS (Helpers)
+            // ==========================================
+            const Utils = {
+                formatMoney: (value) => {
+                    return new Intl.NumberFormat(CONFIG.CURRENCY_LOCALE, { style: 'currency', currency: CONFIG.CURRENCY_CODE }).format(value);
+                },
+                hapticFeedback: () => {
+                    if (typeof window.navigator.vibrate === 'function') {
+                        window.navigator.vibrate(40);
+                    }
+                },
+                getEl: (id) => document.getElementById(id),
+                generateToast: (message) => {
+                    const root = Utils.getEl('js-toast-root');
+                    const toast = document.createElement('div');
+                    toast.className = 'toast-msg';
+                    toast.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> ${message}`;
+                    root.appendChild(toast);
+                    
+                    setTimeout(() => {
+                        toast.classList.add('is-leaving');
+                        setTimeout(() => toast.remove(), 400);
+                    }, 3000);
                 }
-
-                grid.innerHTML = filteredProducts.map(p => `
-                    <div class="card">
-                        <div class="tag-stock">Restam ${p.stock}</div>
-                        <div class="card-img-wrap" onclick="app.viewProduct(${p.id})">
-                            <img src="${p.img}" alt="${p.name}" loading="lazy">
-                        </div>
-                        <h3 class="card-title">${p.name}</h3>
-                        <div class="card-price">${formatBRL(p.price)}</div>
-                        <button class="btn-outline" onclick="app.addToCart(${p.id})">Adicionar</button>
-                    </div>
-                `).join('');
             };
 
-            const viewProduct = (id) => {
-                const p = getProductById(id);
-                const container = document.getElementById('product-view-container');
-                container.innerHTML = `
-                    <div class="product-gallery">
-                        <img src="${p.img}" alt="${p.name}">
-                    </div>
-                    <div class="product-details">
-                        <div class="urgency-box">
-                            <p>🔥 Alta Demanda! Apenas ${p.stock} unidades no estoque.</p>
-                        </div>
-                        <h1>${p.name}</h1>
-                        <p class="desc">${p.desc}</p>
-                        <div class="price">${formatBRL(p.price)}</div>
-                        <button class="btn-primary" style="width: 100%;" onclick="app.addToCart(${p.id})">
-                            Reservar Esta Peça Agora
-                        </button>
-                        <ul style="margin-top: 30px; color: #888; font-size: 0.9rem; list-style: none; line-height: 2;">
-                            <li>✓ Garantia Time Keepr</li>
-                            <li>✓ Pagamento Seguro via WhatsApp</li>
-                            <li>✓ Envio Imediato para todo o país</li>
-                        </ul>
-                    </div>
-                `;
-                navigate('product');
+            // ==========================================
+            // 3. ESTADO DA APLICAÇÃO (State Management)
+            // ==========================================
+            const State = {
+                filter: 'ALL',
+                sort: 'default',
+                searchQuery: '',
+                cart: []
             };
 
-            const updateCartUI = () => {
-                document.getElementById('cart-counter').innerText = cart.length;
-                const list = document.getElementById('cart-items-list');
-                
-                if (cart.length === 0) {
-                    list.innerHTML = '<p style="color: #666; text-align: center; margin-top: 50px;">Seu carrinho está vazio.</p>';
-                } else {
-                    list.innerHTML = cart.map((item, index) => `
+            // ==========================================
+            // 4. MÓDULO DE CARRINHO (LocalStorage + Lógica)
+            // ==========================================
+            const Cart = {
+                init: () => {
+                    const savedCart = localStorage.getItem(CONFIG.STORAGE_KEY);
+                    if (savedCart) {
+                        try { State.cart = JSON.parse(savedCart); } catch (e) { State.cart = []; }
+                    }
+                    Cart.render();
+                },
+                save: () => {
+                    localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(State.cart));
+                    Cart.render();
+                },
+                add: (id) => {
+                    Utils.hapticFeedback();
+                    const product = DATABASE.find(p => p.id === id);
+                    if (!product) return;
+
+                    const existingItem = State.cart.find(item => item.id === id);
+                    if (existingItem) {
+                        if(existingItem.qty < product.stock) {
+                            existingItem.qty += 1;
+                            Utils.generateToast("QUANTIDADE ATUALIZADA");
+                        } else {
+                            Utils.generateToast("ESTOQUE MÁXIMO ATINGIDO");
+                            return;
+                        }
+                    } else {
+                        State.cart.push({ ...product, qty: 1 });
+                        Utils.generateToast("PEÇA ADICIONADA AO ACERVO");
+                    }
+                    Cart.save();
+                },
+                updateQty: (id, change) => {
+                    Utils.hapticFeedback();
+                    const item = State.cart.find(p => p.id === id);
+                    if (item) {
+                        item.qty += change;
+                        if (item.qty <= 0) {
+                            State.cart = State.cart.filter(p => p.id !== id);
+                        } else if (item.qty > item.stock) {
+                            item.qty = item.stock; // Limit to stock
+                        }
+                        Cart.save();
+                    }
+                },
+                toggle: () => {
+                    const drawer = Utils.getEl('js-cart-drawer');
+                    const overlay = Utils.getEl('js-cart-overlay');
+                    const isOpen = drawer.classList.contains('is-open');
+                    
+                    if (isOpen) {
+                        drawer.classList.remove('is-open');
+                        overlay.classList.remove('is-visible');
+                    } else {
+                        drawer.classList.add('is-open');
+                        overlay.classList.add('is-visible');
+                    }
+                },
+                render: () => {
+                    const listEl = Utils.getEl('js-cart-list');
+                    const badgeEl = Utils.getEl('js-cart-badge');
+                    const totalEl = Utils.getEl('js-cart-total');
+                    const btnCheckout = Utils.getEl('js-btn-checkout');
+                    
+                    const totalItems = State.cart.reduce((acc, item) => acc + item.qty, 0);
+                    const totalValue = State.cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
+
+                    badgeEl.innerText = totalItems;
+                    totalEl.innerText = Utils.formatMoney(totalValue);
+                    btnCheckout.disabled = totalItems === 0;
+
+                    // Lógica da Barra de Frete
+                    const barFill = Utils.getEl('js-shipping-bar');
+                    const msgEl = Utils.getEl('js-shipping-msg');
+                    
+                    if (totalValue >= CONFIG.FREE_SHIPPING_THRESHOLD) {
+                        barFill.style.width = '100%';
+                        barFill.classList.add('is-free');
+                        msgEl.innerHTML = '<strong style="color:var(--tk-success)">✓ FRETE VIP GRÁTIS DESBLOQUEADO</strong>';
+                    } else {
+                        const pct = (totalValue / CONFIG.FREE_SHIPPING_THRESHOLD) * 100;
+                        barFill.style.width = `${pct}%`;
+                        barFill.classList.remove('is-free');
+                        msgEl.innerHTML = `Adicione <strong>${Utils.formatMoney(CONFIG.FREE_SHIPPING_THRESHOLD - totalValue)}</strong> para Frete VIP`;
+                    }
+
+                    // Renderizar Itens
+                    if(State.cart.length === 0) {
+                        listEl.innerHTML = `
+                            <div class="empty-state">
+                                <div class="empty-icon">⌚</div>
+                                <div class="empty-text">SEU ACERVO ESTÁ VAZIO</div>
+                                <p style="font-size:0.8rem; margin-top:10px;">Explore nossa coleção legacy.</p>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    listEl.innerHTML = State.cart.map(item => `
                         <div class="cart-item">
-                            <img src="${item.img}" alt="${item.name}">
-                            <div class="cart-item-info">
-                                <div class="cart-item-title">${item.name}</div>
-                                <div class="cart-item-price">${formatBRL(item.price)}</div>
-                                <button class="remove-item" onclick="app.removeFromCart(${index})">Remover</button>
+                            <img src="${item.img}" class="cart-item-img" alt="${item.name}">
+                            <div class="cart-item-details">
+                                <span class="cart-item-name">${item.name}</span>
+                                <span class="cart-item-price">${Utils.formatMoney(item.price)}</span>
+                            </div>
+                            <div class="cart-item-actions">
+                                <button class="btn-qty" onclick="TKApp.Cart.updateQty(${item.id}, -1)">-</button>
+                                <span class="item-qty-val">${item.qty}</span>
+                                <button class="btn-qty" onclick="TKApp.Cart.updateQty(${item.id}, 1)">+</button>
                             </div>
                         </div>
                     `).join('');
-                }
+                },
+                checkout: () => {
+                    if (State.cart.length === 0) return;
+                    let text = "👑 *TIME KEEPR - ORDEM DE COMPRA VIP*\n\n";
+                    
+                    State.cart.forEach(item => {
+                        text += `▪ ${item.qty}x *${item.name}* (${Utils.formatMoney(item.price)})\n`;
+                    });
 
-                const total = cart.reduce((sum, item) => sum + item.price, 0);
-                document.getElementById('cart-total-value').innerText = formatBRL(total);
-
-                const progressBar = document.getElementById('shipping-progress');
-                const msgBox = document.getElementById('shipping-msg');
-                let percent = (total / FREE_SHIPPING_THRESHOLD) * 100;
-
-                if (total >= FREE_SHIPPING_THRESHOLD) {
-                    progressBar.style.width = '100%';
-                    progressBar.classList.add('success');
-                    msgBox.innerHTML = '<span style="color: var(--success);">✓ Você ganhou Frete Grátis!</span>';
-                } else {
-                    progressBar.style.width = `${percent}%`;
-                    progressBar.classList.remove('success');
-                    msgBox.innerHTML = `Adicione <span>${formatBRL(FREE_SHIPPING_THRESHOLD - total)}</span> para Frete Grátis`;
-                }
-
-                document.getElementById('btn-checkout').disabled = cart.length === 0;
-            };
-
-            const addToCart = (id) => {
-                const product = getProductById(id);
-                cart.push(product);
-                updateCartUI();
-                showToast(`"${product.name}" adicionado.`);
-                if (!document.getElementById('cart-drawer').classList.contains('open')) {
-                    toggleCart();
-                }
-            };
-
-            const removeFromCart = (index) => {
-                cart.splice(index, 1);
-                updateCartUI();
-            };
-
-            const toggleCart = () => {
-                document.getElementById('cart-drawer').classList.toggle('open');
-                document.getElementById('cart-overlay').classList.toggle('open');
-            };
-
-            const checkout = () => {
-                if (cart.length === 0) return;
-                
-                let text = "⌚ *NOVO PEDIDO | TIME KEEPR* ⌚\n\n";
-                cart.forEach((item, i) => text += `${i + 1}. *${item.name}* - ${formatBRL(item.price)}\n`);
-
-                const total = cart.reduce((sum, item) => sum + item.price, 0);
-                text += `\n*VALOR TOTAL:* ${formatBRL(total)}\n`;
-                if(total >= FREE_SHIPPING_THRESHOLD) text += "📦 _*Frete Grátis Aplicado!*_\n";
-
-                window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`, '_blank');
-            };
-
-            const navigate = (sceneId, pushState = true) => {
-                document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
-                document.getElementById(`scene-${sceneId}`).classList.add('active');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-                if (document.getElementById('cart-drawer').classList.contains('open')) toggleCart();
-                
-                if (pushState) {
-                    window.history.pushState({ scene: sceneId }, '', `#${sceneId}`);
-                }
-            };
-
-            const showToast = (message) => {
-                const container = document.getElementById('toast-container');
-                const toast = document.createElement('div');
-                toast.className = 'toast';
-                toast.innerHTML = `<div class="toast-icon">✓</div><div>${message}</div>`;
-                container.appendChild(toast);
-                setTimeout(() => toast.classList.add('show'), 10);
-                setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 500); }, 3000);
-            };
-
-            const handleScroll = () => {
-                const header = document.getElementById('main-header');
-                window.scrollY > 50 ? header.classList.add('scrolled') : header.classList.remove('scrolled');
-            };
-
-            const init = () => {
-                renderCatalog();
-                updateCartUI();
-                window.addEventListener('scroll', handleScroll);
-                
-                window.history.replaceState({ scene: 'home' }, '', '#home');
-                
-                window.addEventListener('popstate', (event) => {
-                    if (event.state && event.state.scene) {
-                        navigate(event.state.scene, false);
-                    } else {
-                        navigate('home', false);
+                    const total = State.cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
+                    text += `\n*VALOR TOTAL:* ${Utils.formatMoney(total)}\n`;
+                    
+                    if(total >= CONFIG.FREE_SHIPPING_THRESHOLD) {
+                        text += "📦 _Qualificado para Frete VIP Gratuito_\n";
                     }
-                });
+
+                    const url = `https://wa.me/${CONFIG.WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
+                    window.open(url, '_blank');
+                }
             };
 
-            return { init, navigate, addToCart, removeFromCart, toggleCart, viewProduct, checkout, filterCatalog };
-        })();
+            // ==========================================
+            // 5. MÓDULO DE CATÁLOGO (Filtros, Sort e Render)
+            // ==========================================
+            const Catalog = {
+                init: () => {
+                    // Bind de Eventos de Filtro
+                    document.querySelectorAll('.filter-btn').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('is-active'));
+                            e.target.classList.add('is-active');
+                            State.filter = e.target.dataset.filter;
+                            Catalog.render();
+                        });
+                    });
 
-        window.addEventListener('DOMContentLoaded', app.init);
+                    // Bind do Select de Sort
+                    Utils.getEl('js-sort-select').addEventListener('change', (e) => {
+                        State.sort = e.target.value;
+                        Catalog.render();
+                    });
+
+                    // Bind da Busca
+                    Utils.getEl('js-search-input').addEventListener('input', (e) => {
+                        State.searchQuery = e.target.value.toLowerCase().trim();
+                        if(!Utils.getEl('scene-catalog').classList.contains('is-active')) {
+                            Router.navigate('catalog');
+                        }
+                        Catalog.render();
+                    });
+
+                    Catalog.render();
+                },
+                getProcessedData: () => {
+                    let data = [...DATABASE];
+
+                    // Aplicar Filtro de Categoria
+                    if (State.filter !== 'ALL') {
+                        data = data.filter(p => p.gender === State.filter);
+                    }
+
+                    // Aplicar Busca Textual Dinâmica
+                    if (State.searchQuery) {
+                        data = data.filter(p => 
+                            p.name.toLowerCase().includes(State.searchQuery) || 
+                            p.desc.toLowerCase().includes(State.searchQuery)
+                        );
+                    }
+
+                    // Aplicar Algoritmo de Ordenação
+                    switch(State.sort) {
+                        case 'price-asc': data.sort((a, b) => a.price - b.price); break;
+                        case 'price-desc': data.sort((a, b) => b.price - a.price); break;
+                        case 'name-asc': data.sort((a, b) => a.name.localeCompare(b.name)); break;
+                        default: break; // Mantém ordem original do DB (Destaque)
+                    }
+
+                    return data;
+                },
+                render: () => {
+                    const grid = Utils.getEl('js-product-grid');
+                    const emptyState = Utils.getEl('js-empty-catalog');
+                    const data = Catalog.getProcessedData();
+
+                    if (data.length === 0) {
+                        grid.innerHTML = '';
+                        emptyState.style.display = 'block';
+                        emptyState.innerHTML = `
+                            <div class="empty-state">
+                                <div class="empty-icon">🔍</div>
+                                <div class="empty-text">NENHUMA PEÇA ENCONTRADA</div>
+                                <p style="font-size:0.85rem; margin-top:10px;">Tente ajustar seus filtros ou termos de busca.</p>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    emptyState.style.display = 'none';
+                    grid.innerHTML = data.map((p, index) => `
+                        <article class="card-product" style="animation-delay: ${Math.min(index * 0.05, 0.4)}s">
+                            <div class="card-badge-stock">ESTOQUE: ${p.stock}</div>
+                            <div class="card-media" onclick="TKApp.Router.viewProduct(${p.id})">
+                                <img src="${p.img}" alt="${p.name}" loading="lazy">
+                            </div>
+                            <div class="card-content">
+                                <h3 class="card-title">${p.name}</h3>
+                                <div class="card-specs">${p.movement}</div>
+                                <div class="card-price">${Utils.formatMoney(p.price)}</div>
+                            </div>
+                            <button class="btn-add-cart" onclick="TKApp.Cart.add(${p.id})">ADQUIRIR PEÇA</button>
+                        </article>
+                    `).join('');
+                }
+            };
+
+            // ==========================================
+            // 6. ROTEADOR SPA (Navigation & History API)
+            // ==========================================
+            const Router = {
+                init: () => {
+                    window.addEventListener('popstate', (e) => {
+                        const scene = e.state ? e.state.scene : 'home';
+                        Router.renderScene(scene, false);
+                    });
+                    
+                    // Configuração inicial baseada no Hash
+                    const initialScene = window.location.hash.replace('#', '') || 'home';
+                    Router.navigate(initialScene, true);
+                },
+                navigate: (sceneId, pushState = true) => {
+                    Utils.hapticFeedback();
+                    
+                    // Limpar busca se sair do catálogo
+                    if (sceneId !== 'catalog' && sceneId !== 'product') {
+                        Utils.getEl('js-search-input').value = '';
+                        State.searchQuery = '';
+                        Catalog.render();
+                    }
+
+                    // Fechar carrinho se estiver aberto
+                    if (Utils.getEl('js-cart-drawer').classList.contains('is-open')) {
+                        Cart.toggle();
+                    }
+
+                    Router.renderScene(sceneId, pushState);
+                },
+                renderScene: (sceneId, pushState) => {
+                    document.querySelectorAll('.spa-scene').forEach(el => el.classList.remove('is-active'));
+                    
+                    const targetScene = Utils.getEl(`scene-${sceneId}`);
+                    if (targetScene) {
+                        targetScene.classList.add('is-active');
+                        if (pushState) {
+                            window.history.pushState({ scene: sceneId }, '', `#${sceneId}`);
+                        }
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    } else {
+                        // Fallback
+                        Utils.getEl('scene-home').classList.add('is-active');
+                    }
+                },
+                viewProduct: (id) => {
+                    const product = DATABASE.find(p => p.id === id);
+                    if (!product) return;
+
+                    const container = Utils.getEl('js-product-detail');
+                    container.innerHTML = `
+                        <div class="detail-wrapper">
+                            <div class="detail-gallery">
+                                <img src="${product.img}" alt="${product.name}">
+                            </div>
+                            <div class="detail-info">
+                                <span class="detail-ref">REF. TK-${product.id}00${product.gender}</span>
+                                <h1 class="detail-name">${product.name}</h1>
+                                <p class="detail-desc">${product.desc}</p>
+                                
+                                <ul class="tech-specs-list">
+                                    <li><span>MAQUINÁRIO</span> <span>${product.movement}</span></li>
+                                    <li><span>VISOR</span> <span>${product.glass}</span></li>
+                                    <li><span>RESISTÊNCIA</span> <span>${product.waterResist}</span></li>
+                                </ul>
+
+                                <div class="detail-price">${Utils.formatMoney(product.price)}</div>
+                                
+                                <div class="detail-actions">
+                                    <button class="btn-cta-main" style="width:100%;" onclick="TKApp.Cart.add(${product.id})">ADICIONAR AO ACERVO</button>
+                                </div>
+
+                                <button class="btn-back-link" onclick="TKApp.Router.navigate('catalog')">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                                    RETORNAR AO CATÁLOGO
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    Router.navigate('product');
+                }
+            };
+
+            // ==========================================
+            // 7. EVENTOS GLOBAIS (Scroll, Header UI)
+            // ==========================================
+            const bindGlobalEvents = () => {
+                const header = Utils.getEl('js-header');
+                window.addEventListener('scroll', () => {
+                    if (window.scrollY > 60) {
+                        header.classList.add('is-scrolled');
+                    } else {
+                        header.classList.remove('is-scrolled');
+                    }
+                }, { passive: true });
+            };
+
+            // ==========================================
+            // EXPOSIÇÃO DA API PÚBLICA (Closure Pattern)
+            // ==========================================
+            return {
+                init: () => {
+                    Cart.init();
+                    Catalog.init();
+                    Router.init();
+                    bindGlobalEvents();
+                    console.log("Time Keepr SPA V3 initialized.");
+                },
+                Router: {
+                    navigate: Router.navigate,
+                    viewProduct: Router.viewProduct
+                },
+                Cart: {
+                    add: Cart.add,
+                    updateQty: Cart.updateQty,
+                    toggle: Cart.toggle,
+                    checkout: Cart.checkout
+                },
+                filter: (gender, btnElement) => {
+                    // Wrapper público para uso no HTML inline
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('is-active'));
+                    btnElement.classList.add('is-active');
+                    State.filter = gender;
+                    Catalog.render();
+                }
+            };
+
+        })(); // Fim do Módulo TKApp
+
+        // Inicializar a aplicação quando o DOM estiver pronto
+        document.addEventListener('DOMContentLoaded', TKApp.init);
+
     </script>
 </body>
 </html>
